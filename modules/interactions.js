@@ -169,8 +169,13 @@ async function handleModalChangeName(interaction) {
  * @param {ModalSubmitInteraction} interaction 
  */
 async function handleModalChangeLimit(interaction) {
-    interaction.reply({ content : 'Nombre de place définit avec succès', ephemeral: true });
-    interaction.channel.setUserLimit(interaction.fields.getTextInputValue('input_NewLimitVoc'));
+	const limit = interaction.fields.getTextInputValue('input_NewLimitVoc');
+	if(isNaN(limit)) {
+		interaction.reply({ content : 'Erreur lors du changement de la limite de place', ephemeral: true });
+		return;	
+	}
+	interaction.channel.setUserLimit(limit);
+	interaction.reply({ content : 'Nombre de place définit avec succès', ephemeral: true });
 }
 
 /**
@@ -178,12 +183,30 @@ async function handleModalChangeLimit(interaction) {
  * @param {UserSelectMenuInteraction} interaction 
  */
 async function handleSelectBan(interaction){
-    interaction.values.forEach(user => {
-        interaction.channel.permissionOverwrites.edit(user,{
-            Connect : false
-        })
-    });
-    interaction.reply({ content : 'Les personnes ont été éjectés avec succès', ephemeral: true });
+    for (user of interaction.values){
+		interaction.channel.permissionOverwrites.edit(user, {
+			Connect: false
+		});
+
+		// Si la personne est dans le salon, on l'éjecte
+		if (interaction.channel.members.has(user)) {
+
+			// Si la personne est modérateur ou admin, on ne l'éjecte pas
+			const member = interaction.channel.members.get(user);
+			if (member.permissions.has(PermissionsBitField.Flags.ManageMessages) || member.permissions.has(PermissionsBitField.Flags.Administrator)) {
+				await interaction.reply({ content: 'Vous ne pouvez pas éjecter un modérateur ou un administrateur', ephemeral: true });
+				return;
+			}
+
+			// Si la personne est l'auteur de la commande, on ne l'éjecte pas
+			if (interaction.user.id === user) {
+				await interaction.reply({ content: 'Vous ne pouvez pas vous éjecter vous même', ephemeral: true });
+				return;
+			}
+			interaction.channel.members.get(user).voice.disconnect();
+		}
+	}
+    await interaction.reply({ content : 'Les personnes ont été éjectés avec succès', ephemeral: true });
 }
 
 /**

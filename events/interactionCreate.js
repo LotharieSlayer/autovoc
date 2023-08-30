@@ -19,38 +19,42 @@ const { autovocChangeName, autovocChangeLimit, autovocReject, autovocPermit, aut
  * @param {Client} client The client that created the interaction.
  */
 function execute(interaction, client) {
-    if(voiceChannel.get(interaction.channelId)===undefined || voiceChannel.get(interaction.channelId)===null) return;
-    if(voiceChannel.get(interaction.channelId).ownerId !== interaction.member.id) return;
-    if (interaction.type === InteractionType.MessageComponent) {
-        if (interaction.values[0] === "autovoc_nom") {
-            autovocChangeName(interaction, client);
-        }
-        if (interaction.values[0] === "autovoc_limit") {
-            autovocChangeLimit(interaction, client);
-        }
-        if (interaction.values[0] === "autovoc_reject") {
-            autovocReject(interaction, client);
-        }
-        if (interaction.values[0] === "autovoc_permit") {
-            autovocPermit(interaction, client);
-        }
-        if (interaction.values[0] === "autovoc_lock") {
-            autovocLock(interaction, client);
-        }
-        if (interaction.values[0] === "autovoc_unlock") {
-            autovocUnlock(interaction, client);
-        }
-        
-    }
+	try {
+		if(voiceChannel.get(interaction.channelId)===undefined || voiceChannel.get(interaction.channelId)===null) return;
+		if(voiceChannel.get(interaction.channelId).ownerId !== interaction.member.id) return;
+		if (interaction.type === InteractionType.MessageComponent) {
+			if (interaction.values[0] === "autovoc_nom") {
+				autovocChangeName(interaction, client);
+			}
+			if (interaction.values[0] === "autovoc_limit") {
+				autovocChangeLimit(interaction, client);
+			}
+			if (interaction.values[0] === "autovoc_reject") {
+				autovocReject(interaction, client);
+			}
+			if (interaction.values[0] === "autovoc_permit") {
+				autovocPermit(interaction, client);
+			}
+			if (interaction.values[0] === "autovoc_lock") {
+				autovocLock(interaction, client);
+			}
+			if (interaction.values[0] === "autovoc_unlock") {
+				autovocUnlock(interaction, client);
+			}
+			
+		}
 
-    
-    if (interaction.customId === "autovoc_banuser") handleSelectBan(interaction);
-    if (interaction.customId === "autovoc_permituser") handleSelectPermit(interaction);
-    
-    if (interaction.type === InteractionType.ModalSubmit) {
-        if (interaction.customId === "mod_changename") handleModalChangeName(interaction);
-        if (interaction.customId === "mod_changelimit") handleModalChangeLimit(interaction);
-    }
+		
+		if (interaction.customId === "autovoc_banuser") handleSelectBan(interaction);
+		if (interaction.customId === "autovoc_permituser") handleSelectPermit(interaction);
+		
+		if (interaction.type === InteractionType.ModalSubmit) {
+			if (interaction.customId === "mod_changename") handleModalChangeName(interaction);
+			if (interaction.customId === "mod_changelimit") handleModalChangeLimit(interaction);
+		}
+	} catch (error) {
+		console.error(error);
+	}
 }
 
 /* ----------------------------------------------- */

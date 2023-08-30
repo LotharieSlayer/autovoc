@@ -6,7 +6,7 @@
 
 
 /*      IMPORTS      */
-const { ChannelType, EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder, VoiceState } = require('discord.js')
+const { ChannelType, EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder, VoiceState, PermissionsBitField } = require('discord.js')
 const { setupAutoVoc, voiceChannel } = require("../utils/enmapUtils");
 const { color_embed,
 		embed_footer_text, 
@@ -59,6 +59,10 @@ async function createNewVoiceChannel(newstate){
     })
     .catch(console.error);
     newstate.member.voice.setChannel(createdChan)
+	// createdChan.permissionOverwrites.set([
+	// 	{ id : newstate.member.id, allow :  [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.MuteMembers, PermissionsBitField.Flags.DeafenMembers] },
+	// ], 'Autoriser le membre ayant créé le salon à mute/deaf les autres membres')
+
     //Ajout du nouveau salon dans la base de données
     voiceChannel.set(createdChan.id, {
         ownerId : newstate.member.id,
@@ -75,12 +79,12 @@ async function createNewVoiceChannel(newstate){
     __Ici, tu peux gérer ton salon vocal.
     Les commandes à dispositions sont les suivantes :__
 
-    > -*Changer le nom du salon*
-    > -*Changer le nombre de place dans le salon*
-    > -*Ejecter et bloquer une personne du salon*
-    > -*Autoriser une personne quand le salon est lock*
-    > -*Lock le salon*
-    > -*Unlock le salon*`
+    > - *Changer le nom du salon*
+    > - *Changer le nombre de place dans le salon*
+    > - *Ejecter et bloquer une personne du salon*
+    > - *Autoriser une personne quand le salon est lock*
+    > - *Lock le salon*
+    > - *Unlock le salon*`
 
     //Création de l'embed d'affichage
 	let embed_list = new EmbedBuilder()
