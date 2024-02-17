@@ -219,7 +219,7 @@ async function handleSelectPermit(interaction){
             Connect : true
         })
     });
-    interaction.reply({ content : 'Les personnes ont été éjectés avec succès', ephemeral: true });
+    interaction.reply({ content : 'Les personnes ont été autorisées avec succès', ephemeral: true });
 }
 
 
